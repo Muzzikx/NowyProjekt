@@ -44,16 +44,13 @@ int main()
 
 			if( connect.bSetText ){
 				connect.getLoginFromKeyboard( event );
-				cout << "#1" << endl;
 			}
 			else if( !connect.getStatusClient() ){
 				connect.sendDataTcp( "dolacz" );
 				connect.setStatusClient( ClientConnect::CLIENT_LOGGED );
-				cout << "#2" << endl;
 			}
 			else{
 				connect.sendDataUdp123();
-				cout << "#3" << endl;
 			}
 
 			/*if( ( event.type == sf::Event::KeyPressed ) && ( event.key.code == sf::Keyboard::Q ) ){
