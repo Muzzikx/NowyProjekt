@@ -10,8 +10,8 @@ public:
 
 	serverGui(void);																/// ladowanie czcionek i konfiguracja ip servera	
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;		/// wypisanie podlaczonych klientow i ip servera
-	void addIpClient( string address );												/// dodawanie klienta do wyswietlenia 
-	void deleteIpClient( string address );											/// usuniecie klienta z wyswietlania
+	void addIpClient( string address, string login );												/// dodawanie klienta do wyswietlenia 
+	void deleteIpClient( string address , string login);											/// usuniecie klienta z wyswietlania
 
 };
 
@@ -31,20 +31,20 @@ public:
 			target.draw( clientIp[i] );	
 	}
 
-	void serverGui::addIpClient( string address )
+	void serverGui::addIpClient( string address , string login  )
 	{
 		clientIp.push_back( sf::Text() );
 		clientIp.back().setFont( font );
-		clientIp.back().setString( "client --> " + address );
+		clientIp.back().setString( login + " --> " + address );
 		clientIp.back().setColor( sf::Color::White );
 		clientIp.back().setPosition( 0, clientIp.size()*30 );
 
 	}
 
-	void serverGui::deleteIpClient( string address )
+	void serverGui::deleteIpClient( string address, string login )
 	{
 		for( int i=0; i<clientIp.size(); i++ )			
-			if( clientIp[i].getString() == ("client --> " +address) ){
+			if( clientIp[i].getString() == ( login+" --> " +address) ){
 				clientIp.erase( clientIp.begin() + i );
 				return;
 			}

@@ -96,6 +96,8 @@ public:
 		string login, message;
 		packet >> login >> message;
 
+		cout << login << " " << message << endl;
+
 		if( message == "dolacz" ){
 			addClient( s_address( socketTcp.getRemoteAddress(), login) );
 		}
@@ -111,18 +113,24 @@ public:
 				return;
 
 		activeClient.push_back( address );
-		addIpClient( activeClient.back().ip.toString() );
+		addIpClient( activeClient.back().ip.toString(), activeClient.back().login );
 		cout << "Dodano: " << activeClient.back().ip.toString() << " login : " << address.login << endl;
 	}
 
 	void serverClass::deleteClient( string login )
 	{
+
+		cout << "size: " << activeClient.size() << endl;
 		for( int i=0; i<activeClient.size(); i++ )
+		{
+			
 			if( activeClient[i].login == login ){
-				//activeClient.erase( activeClient.begin() + i );
-				//deleteIpClient( socketTcp.getRemoteAddress().toString() );
-				cout << "Usunieto: " << activeClient.back().ip.toString() << " login : " << login << endl;
+				cout << "Usunieto: " << activeClient[i].login << endl;
+				deleteIpClient( activeClient[i].ip.toString(), login );
+				activeClient.erase( activeClient.begin() + i );	
+				return;
 			}
+		}
 	}
 
 	void serverClass::sendDataToAll()
