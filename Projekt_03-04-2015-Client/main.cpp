@@ -5,9 +5,10 @@
 
 using namespace std;
 
-#include "clientConnect.h"
+#include "ClientConnect.h"
 
-int main(){
+int main()
+{
 	sf::RenderWindow window( sf::VideoMode( 640, 480 ), "Projekt 04.03.2015r", sf::Style::Titlebar );
 	ClientConnect connect;
 	//connect.logIn();
@@ -31,36 +32,28 @@ int main(){
 	textMessageLogin.setColor( sf::Color::White );
 	textMessageLogin.setCharacterSize( 40 );
 
-	while( window.isOpen() ){
-		while( window.pollEvent( event ) ){
+	while( window.isOpen() )
+	{
+		while( window.pollEvent( event ) )
+		{
 			if( event.type == sf::Event::Closed )
 				window.close();
 
 			if( ( event.type == sf::Event::KeyPressed ) && ( event.key.code == sf::Keyboard::Escape ) )
 				window.close();
-			
-			if( event.type == sf::Event::TextEntered ){		
-				switch( event.text.unicode ){
-					case 8:
-						if( szLogin.size() > 0 )
-							szLogin.erase( szLogin.size()-1,1 );
-					break;
 
-					case 13:
-						if( connect.getStatusClient() == 0 ){
-							connect.setLoginClient( szLogin );
-							connect.sendDataTcp( "dolacz" );
-						}
-						else
-							connect.sendDataUdp( szLogin );
-					break;
-
-					default:
-						szLogin += static_cast< char >( event.text.unicode );
-					break;
-				}
-
-					
+			if( connect.bSetText ){
+				connect.getLoginFromKeyboard( event );
+				cout << "#1" << endl;
+			}
+			else if( !connect.getStatusClient() ){
+				connect.sendDataTcp( "dolacz" );
+				connect.setStatusClient( ClientConnect::CLIENT_LOGGED );
+				cout << "#2" << endl;
+			}
+			else{
+				connect.sendDataUdp123();
+				cout << "#3" << endl;
 			}
 
 			/*if( ( event.type == sf::Event::KeyPressed ) && ( event.key.code == sf::Keyboard::Q ) ){
@@ -83,4 +76,3 @@ int main(){
 	connect.logOut();
     return 0;
 }
-

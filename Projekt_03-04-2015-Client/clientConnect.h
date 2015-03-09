@@ -19,17 +19,15 @@ class ClientConnect : public ClientGui
 
 		const string IP_SERVER;
 
-		enum status{
+	public:
+		static enum status{
 			CLIENT_UNLOGGED = 0,
 			CLIENT_LOGGED
 		};
 
-		status statusClient;
-		string szLoginClient;
+	private: status statusClient;
 
-		ClientGui clientGui;
-
-	public:
+	public: 
 		ClientConnect();
 		~ClientConnect();
 
@@ -37,14 +35,24 @@ class ClientConnect : public ClientGui
 		void logOut();
 		bool getStatusClient();
 		bool setStatusClient( status statusClient );
-		string setLoginClient( string szLoginClient );
+		string setLoginClient( string szLogin );
 		string getLoginClient();
 		bool getConnectTcp();
 		bool getDataUdp();
 		bool getDataTcp();
 		bool sendDataUdp( string szText );
 		bool sendDataTcp( string szText );
+
+		
+		bool sendDataUdp123();
 };
+
+bool ClientConnect::sendDataUdp123(){
+	pakiet.clear();
+	pakiet << "Przesy³am dane.....";
+	socketUdp.send( pakiet, IP_SERVER, PORT_SERVER_UDP );
+	return true;
+}
 
 ClientConnect::ClientConnect(): PORT_SERVER_TCP( 12345 ), PORT_SERVER_UDP( 54321 ), PORT_CLIENT_UDP( 11111 ), IP_SERVER( "192.168.0.102" ){
 	bConnected = false;
@@ -67,7 +75,7 @@ bool ClientConnect::sendDataTcp( string szText ){
 		return false;
 
 	pakiet.clear();
-	pakiet << szLoginClient << szText;
+	pakiet << szLogin << szText;
 	socketTcp.send( pakiet );
 	socketTcp.disconnect();
 	return true;
@@ -82,11 +90,11 @@ bool ClientConnect::setStatusClient( status statusClient ){
 }
 
 string ClientConnect::getLoginClient(){
-	return szLoginClient;
+	return szLogin;
 }
 
-string ClientConnect::setLoginClient( string szLoginClient ){
-	return this->szLoginClient = szLoginClient;
+string ClientConnect::setLoginClient( string szLogin ){
+	return this->szLogin = szLogin;
 }
 
 bool ClientConnect::getConnectTcp(){
@@ -103,12 +111,12 @@ bool ClientConnect::sendDataUdp( string szText ){
 bool ClientConnect::getDataUdp(){
 	sf::IpAddress senderAddress;
 	unsigned short senderPort;
-	string szText;
+	string szText, szText2;
 
 	pakiet.clear();
 	if( !socketUdp.receive( pakiet, senderAddress, senderPort ) ){
-		pakiet >> szText;
-		cout << "Odebrano: " << szText << endl;
+		pakiet >> szText >> szText2;
+		cout << "Odebrano od " << szText << ": " << szText2 << endl;
 	}
 	return true;
 }
