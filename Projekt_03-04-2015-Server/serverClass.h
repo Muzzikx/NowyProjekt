@@ -138,8 +138,10 @@ public:
 		senderPacket.clear();
 
 		for( int i=0; i<activeClient.size(); i++ ){
-			if( packetsQueue.front().address == activeClient[i].ip ) continue;				/// pomija przy wysylaniu adres nadawcy 
-			senderPacket << activeClient[i].ip.toString() << packetsQueue.front().packet ;
+			//if( packetsQueue.front().address == activeClient[i].ip ) continue;				/// pomija przy wysylaniu adres nadawcy 
+			string ss;
+			packetsQueue.front().packet >> ss;
+			senderPacket << activeClient[i].login << ss;
 			socketUdp.send( senderPacket, activeClient[i].ip, CLIENT_PORT_UDP );	
 		}	
 
