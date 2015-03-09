@@ -4,7 +4,7 @@ class ClientGui : public sf::Drawable
 {
 	private:
 		sf::RectangleShape rectangleLogin, rectangleOk;
-		sf::Text textLogin, textOk, tLogin, tOk;
+		sf::Text textLogin, tLogin, tOk;
 		sf::Font fontGui;
 		
 
@@ -20,6 +20,12 @@ class ClientGui : public sf::Drawable
 			tLogin.setCharacterSize( 25 );
 			tLogin.setString( "" );
 
+			tOk.setFont( fontGui );
+			tOk.setColor( sf::Color::Black );
+			tOk.setPosition( 300, 403 );
+			tOk.setCharacterSize( 20 );
+			tOk.setString( "Zaloguj" );
+
 			textLogin.setFont( fontGui );
 			textLogin.setColor( sf::Color::White );
 			textLogin.setPosition( 150, 346 );
@@ -31,11 +37,11 @@ class ClientGui : public sf::Drawable
 			rectangleLogin.setOutlineThickness( 1 );
 			rectangleLogin.setPosition( 250, 350 );
 
-			bSetText = true;
-
 			rectangleOk.setSize( sf::Vector2f( 70, 35 ) );
 			rectangleOk.setFillColor( sf::Color::Red );
 			rectangleOk.setPosition( 300, 400 );
+
+			bSetText = true;
 
 		}
 
@@ -44,7 +50,7 @@ class ClientGui : public sf::Drawable
 
 		}
 
-		void getLoginFromKeyboard( sf::Event &event );
+		void getLoginFromKeyboard( sf::Event &event, sf::RenderWindow &window );
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 
@@ -52,12 +58,15 @@ void ClientGui::draw( sf::RenderTarget& target, sf::RenderStates states ) const{
 	target.draw( rectangleLogin );
 	target.draw( rectangleOk );
 	target.draw( tLogin );
+	target.draw( tOk );
 	target.draw( textLogin );
 }
 
-void ClientGui::getLoginFromKeyboard( sf::Event &event ){
+void ClientGui::getLoginFromKeyboard( sf::Event &event, sf::RenderWindow &window ){
+	sf::Mouse mouse;
+	sf::Vector2i position = mouse.getPosition( window );
+
 	if( event.type == sf::Event::TextEntered ){
-		cout << "Test" << endl;
 		switch( event.text.unicode ){
 			case 8:
 				if( szLogin.size() > 0 )
@@ -73,5 +82,9 @@ void ClientGui::getLoginFromKeyboard( sf::Event &event ){
 			break;
 		}
 		tLogin.setString( szLogin );
+	}
+
+	if( rectangleOk.getGlobalBounds().contains( sf::Vector2f( position ) ) ){
+		
 	}
 }

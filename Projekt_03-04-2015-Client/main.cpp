@@ -11,27 +11,8 @@ int main()
 {
 	sf::RenderWindow window( sf::VideoMode( 640, 480 ), "Projekt 04.03.2015r", sf::Style::Titlebar );
 	ClientConnect connect;
-	//connect.logIn();
 
-	string szTextGetLogin = "Podaj swoj login: ";
-	string szLogin;
 	sf::Event event;
-	sf::Text textGetLogin, textMessageLogin;
-	sf::Font fontText;
-
-	fontText.loadFromFile( "font.ttf" );
-
-	textGetLogin.setPosition( 5.0, 50.0 );
-	textGetLogin.setFont( fontText );
-	textGetLogin.setColor( sf::Color::White );
-	textGetLogin.setCharacterSize( 40 );
-	textGetLogin.setString( szTextGetLogin );
-
-	textMessageLogin.setPosition( 250.0, 50.0 );
-	textMessageLogin.setFont( fontText );
-	textMessageLogin.setColor( sf::Color::White );
-	textMessageLogin.setCharacterSize( 40 );
-
 	while( window.isOpen() )
 	{
 		while( window.pollEvent( event ) )
@@ -43,7 +24,7 @@ int main()
 				window.close();
 
 			if( connect.bSetText ){
-				connect.getLoginFromKeyboard( event );
+				connect.getLoginFromKeyboard( event, window );
 			}
 			else if( !connect.getStatusClient() ){
 				connect.sendDataTcp( "dolacz" );
@@ -52,18 +33,9 @@ int main()
 			else{
 				connect.sendDataUdp123();
 			}
-
-			/*if( ( event.type == sf::Event::KeyPressed ) && ( event.key.code == sf::Keyboard::Q ) ){
-				cin >> szText;
-				textMessage.setString( szText );
-			}*/
 		}
 		window.clear();
 
-		textMessageLogin.setString( szLogin );
-
-		window.draw( textGetLogin );
-		window.draw( textMessageLogin );
 		window.draw( connect );
 
 		connect.getDataUdp();
