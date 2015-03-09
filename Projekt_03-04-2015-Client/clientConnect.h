@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ClientGui.h"
+#include <Windows.h>
 
 class ClientConnect : public ClientGui
 {
@@ -10,6 +11,7 @@ class ClientConnect : public ClientGui
 		sf::IpAddress serverAddress;
 		sf::Socket::Status connectStatusTcp;
 		sf::Packet pakiet;
+		sf::Music musicMessage;
 
 		bool bConnected;
 
@@ -33,6 +35,8 @@ class ClientConnect : public ClientGui
 
 		void logIn();
 		void logOut();
+		void loopConnect();
+
 		bool getStatusClient();
 		bool setStatusClient( status statusClient );
 		string setLoginClient( string szLogin );
@@ -42,10 +46,12 @@ class ClientConnect : public ClientGui
 		bool getDataTcp();
 		bool sendDataUdp( string szText );
 		bool sendDataTcp( string szText );
-
-		
 		bool sendDataUdp123();
 };
+
+void ClientConnect::loopConnect(){
+	getDataUdp();
+}
 
 bool ClientConnect::sendDataUdp123(){
 	pakiet.clear();
@@ -60,6 +66,8 @@ ClientConnect::ClientConnect(): PORT_SERVER_TCP( 12345 ), PORT_SERVER_UDP( 54321
 	serverAddress = IP_SERVER;
 	socketUdp.setBlocking( false );
 	socketUdp.bind( PORT_CLIENT_UDP );
+
+	musicMessage.openFromFile( "message.ogg" );
 }
 
 ClientConnect::~ClientConnect(){
@@ -117,6 +125,7 @@ bool ClientConnect::getDataUdp(){
 	if( !socketUdp.receive( pakiet, senderAddress, senderPort ) ){
 		pakiet >> szText >> szText2;
 		cout << "Odebrano od " << szText << ": " << szText2 << endl;
+		musicMessage.play();
 	}
 	return true;
 }

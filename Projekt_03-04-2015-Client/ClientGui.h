@@ -11,48 +11,46 @@ class ClientGui : public sf::Drawable
 	public:
 		bool bSetText;	
 		string szLogin;
-		ClientGui(void){
-			fontGui.loadFromFile( "arial.ttf" );
 
-			tLogin.setFont( fontGui );
-			tLogin.setColor( sf::Color::Black );
-			tLogin.setPosition( 250, 346 );
-			tLogin.setCharacterSize( 25 );
-			tLogin.setString( "" );
-
-			tOk.setFont( fontGui );
-			tOk.setColor( sf::Color::Black );
-			tOk.setPosition( 300, 403 );
-			tOk.setCharacterSize( 20 );
-			tOk.setString( "Zaloguj" );
-
-			textLogin.setFont( fontGui );
-			textLogin.setColor( sf::Color::White );
-			textLogin.setPosition( 150, 346 );
-			textLogin.setCharacterSize( 25 );
-			textLogin.setString( "LOGIN " );
-
-			rectangleLogin.setSize( sf::Vector2f( 200, 25 ) );
-			rectangleLogin.setOutlineColor( sf::Color::Black );
-			rectangleLogin.setOutlineThickness( 1 );
-			rectangleLogin.setPosition( 250, 350 );
-
-			rectangleOk.setSize( sf::Vector2f( 70, 35 ) );
-			rectangleOk.setFillColor( sf::Color::Red );
-			rectangleOk.setPosition( 300, 400 );
-
-			bSetText = true;
-
-		}
-
-		~ClientGui(void)
-		{
-
-		}
+		ClientGui(void);
+		//~ClientGui(void);
 
 		void getLoginFromKeyboard( sf::Event &event, sf::RenderWindow &window );
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
+
+ClientGui::ClientGui( void ){
+	fontGui.loadFromFile( "arial.ttf" );
+
+	tLogin.setFont( fontGui );
+	tLogin.setColor( sf::Color::Black );
+	tLogin.setPosition( 250, 346 );
+	tLogin.setCharacterSize( 25 );
+	tLogin.setString( "" );
+
+	tOk.setFont( fontGui );
+	tOk.setColor( sf::Color::Black );
+	tOk.setPosition( 300, 403 );
+	tOk.setCharacterSize( 20 );
+	tOk.setString( "Zaloguj" );
+
+	textLogin.setFont( fontGui );
+	textLogin.setColor( sf::Color::White );
+	textLogin.setPosition( 150, 346 );
+	textLogin.setCharacterSize( 25 );
+	textLogin.setString( "LOGIN " );
+
+	rectangleLogin.setSize( sf::Vector2f( 200, 25 ) );
+	rectangleLogin.setOutlineColor( sf::Color::Black );
+	rectangleLogin.setOutlineThickness( 1 );
+	rectangleLogin.setPosition( 250, 350 );
+
+	rectangleOk.setSize( sf::Vector2f( 70, 35 ) );
+	rectangleOk.setFillColor( sf::Color::Red );
+	rectangleOk.setPosition( 300, 400 );
+
+	bSetText = true;
+}
 
 void ClientGui::draw( sf::RenderTarget& target, sf::RenderStates states ) const{
 	target.draw( rectangleLogin );

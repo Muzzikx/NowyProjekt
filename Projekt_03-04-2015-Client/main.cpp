@@ -1,7 +1,9 @@
 #include <iostream>
 #include <string>
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
+#include <SFML/Audio.hpp>
 
 using namespace std;
 
@@ -30,15 +32,16 @@ int main()
 				connect.sendDataTcp( "dolacz" );
 				connect.setStatusClient( ClientConnect::CLIENT_LOGGED );
 			}
-			else{
+			else if( ( event.type == sf::Event::KeyPressed ) && ( event.key.code == sf::Keyboard::F1 ) ){
 				connect.sendDataUdp123();
 			}
 		}
+
 		window.clear();
 
 		window.draw( connect );
 
-		connect.getDataUdp();
+		connect.loopConnect();
 
 		window.display();
 	}
