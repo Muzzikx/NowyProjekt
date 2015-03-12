@@ -34,4 +34,10 @@ struct s_inputText
 	sf::Text name;
 	sf::RectangleShape shape;
 	bool isActived;
+	bool isPass;
+};
+
+struct s_label
+{
+	sf::Text name;
 };

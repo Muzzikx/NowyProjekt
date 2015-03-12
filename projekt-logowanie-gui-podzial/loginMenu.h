@@ -24,7 +24,10 @@ loginMenu::loginMenu()
 
 	gui.add( "button", sf::Vector2f( 420, 550 ), sf::Vector2f( 150, 40 ), "LOGIN" );
 	gui.add( "button", sf::Vector2f( 604, 550 ), sf::Vector2f( 150, 40 ), "EXIT" );
-	gui.add( "inputText", sf::Vector2f( 512, 500 ), sf::Vector2f( 335, 40 ), "" );
+	gui.add( "inputText", sf::Vector2f( 540, 450 ), sf::Vector2f( 250, 40 ), "" );
+	gui.add( "label", sf::Vector2f(380,450),sf::Vector2f(0,0),"LOGIN:" );
+	gui.add( "inputText", sf::Vector2f( 540, 500 ), sf::Vector2f( 250, 40 ), "*" );
+	gui.add( "label", sf::Vector2f(380,500),sf::Vector2f(0,0),"PASS :" );
 }
 
 void loginMenu::update( gameState &currentState )

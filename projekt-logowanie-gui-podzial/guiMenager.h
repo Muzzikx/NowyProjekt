@@ -6,6 +6,7 @@ class guiMenager
 {
 	std::vector<s_button> buttons;
 	std::vector<s_inputText> inputText;
+	std::vector<s_label> labels;
 
 	sf::Font font;
 	sf::Font arial;
@@ -64,7 +65,7 @@ void guiMenager::checkEvent( )
 					break;
 				default:
 					if( inputText[i].name.getLocalBounds().width < (inputText[i].shape.getLocalBounds().left + inputText[i].shape.getLocalBounds().width - 30) )
-						inputText[i].name.setString( inputText[i].name.getString() + static_cast<char>(event.text.unicode) );
+						inputText[i].name.setString( inputText[i].name.getString() + (inputText[i].isPass ? '*' : static_cast<char>(event.text.unicode) ) );
 					break;
 				}
 			}
@@ -106,9 +107,14 @@ void guiMenager::draw()
 		window.draw( inputText[i].shape );
 		window.draw( inputText[i].name );
 	}
+
+	for( int i=0; i<labels.size(); i++ )
+	{
+		window.draw( labels[i].name );
+	}
 }
 
-void guiMenager::add( std::string type, sf::Vector2f position , sf::Vector2f size, std::string name )
+void guiMenager::add( std::string type, sf::Vector2f position=sf::Vector2f(100,100) , sf::Vector2f size=sf::Vector2f(100,100), std::string name="default" )
 {
 	if( type == "button" ){
 		buttons.push_back( s_button() );
@@ -128,12 +134,11 @@ void guiMenager::add( std::string type, sf::Vector2f position , sf::Vector2f siz
 		buttons.back().isActived = false;
 		buttons.back().isClicked = false;
 	}
-	else if( "inputText" )
+	else if( type == "inputText" )
 	{
 		inputText.push_back( s_inputText() );
 		inputText.back().name.setFont( arial );
-		inputText.back().name.setCharacterSize( 25 );
-		inputText.back().name.setString( name );
+		
 		inputText.back().name.setOrigin( ( size.x/2.1 ), buttons.back().name.getCharacterSize()/1.7 );
 		inputText.back().name.setPosition( position );
 		inputText.back().name.setColor( sf::Color::White );
@@ -146,5 +151,18 @@ void guiMenager::add( std::string type, sf::Vector2f position , sf::Vector2f siz
 		inputText.back().shape.setOutlineColor( COLOR_TRANSPARENT );
 
 		inputText.back().isActived = false;
+		if( name == "*" ) inputText.back().isPass = true;
+		else inputText.back().isPass = false;
+		name = "";
+		inputText.back().name.setString( name );
+	} 
+	else if( type == "label" )
+	{
+		labels.push_back( s_label() );
+		labels.back().name.setFont( font );
+		labels.back().name.setString( name );
+		labels.back().name.setOrigin( labels.back().name.getGlobalBounds().width/2 , labels.back().name.getCharacterSize()/1.7 );
+		labels.back().name.setPosition( position );
+		labels.back().name.setColor( sf::Color::White );
 	}
 }
