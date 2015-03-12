@@ -4,6 +4,7 @@
 #include <vector>
 #include <queue>
 #include "serverGui.h"
+#include <fstream>
 
 using namespace std;
 
@@ -11,6 +12,7 @@ class serverClass: public serverGui
 {
 	/// STALE PORTOW NA KTORYCH DZIALAMY DEFINIOWANE W KONSTRUKTORZE
 	const int SERVER_PORT_TCP;
+	const int CLIENT_PORT_TCP;
 	const int SERVER_PORT_UDP;
 	const int CLIENT_PORT_UDP;
 
@@ -37,18 +39,19 @@ class serverClass: public serverGui
 	
 public:
 
-	serverClass(void);											/// binduje odpowiednie porty 
-	void checkConnection();										/// funkcja odbierajaca udp i tcp oraz wykonywujacca odpowiednie akcje
-	void checkUdp();											/// odbieranie na udp
-	void checkTcp();											/// odbieranie na tcp
-	void checkAction( sf::Packet packet );						/// obsluga polecenia z tcp
-	void addClient( s_address address );											/// dodanie nowego adresu do listy klientow podlaczonych 
-	void deleteClient( string login );										/// usuniecie adresu z listy klientow podlaczonych 
-	void sendDataToAll();										/// wyslanie danego pakietu od nadawcy do reszty podlaczonych klientow 
+	serverClass(void);															/// binduje odpowiednie porty 
+	void checkConnection();														/// funkcja odbierajaca udp i tcp oraz wykonywujacca odpowiednie akcje
+	void checkUdp();															/// odbieranie na udp
+	void checkTcp();															/// odbieranie na tcp
+	void checkAction( sf::Packet packet );										/// obsluga polecenia z tcp
+	void addClient( s_address address );										/// dodanie nowego adresu do listy klientow podlaczonych 
+	void deleteClient( string login );											/// usuniecie adresu z listy klientow podlaczonych 
+	void sendDataToAll();														/// wyslanie danego pakietu od nadawcy do reszty podlaczonych klientow 
+	void checkLogin( string login, string password, sf::IpAddress address );	/// sprawdza czy podany login haslo znajduje sie w bazie
 	~serverClass(void);	
 };
 
-	serverClass::serverClass(void): SERVER_PORT_TCP( 12345 ), SERVER_PORT_UDP( 54321 ), CLIENT_PORT_UDP( 11111 )
+	serverClass::serverClass(void): SERVER_PORT_TCP( 12345 ), SERVER_PORT_UDP( 54321 ), CLIENT_PORT_UDP( 11111 ), CLIENT_PORT_TCP( 12121 )
 	{
 		listener.setBlocking(false);
 		socketUdp.setBlocking(false);
@@ -93,17 +96,49 @@ public:
 
 	void serverClass::checkAction( sf::Packet packet )
 	{
-		string login, message;
-		packet >> login >> message;
+		string message, login;
+		packet >> message >> login;
 
-		cout << login << " " << message << endl;
-
-		if( message == "dolacz" ){
-			addClient( s_address( socketTcp.getRemoteAddress(), login) );
-		}
-		else if( message == "rozlacz" ){
+		if( message == "rozlacz" ){
 			deleteClient( login );
 		}
+		else if( message == "login" )
+		{
+			string password;
+			packet >> password;
+			checkLogin( login, password, socketTcp.getRemoteAddress() );
+		}
+	}
+
+	void serverClass::checkLogin( string login, string password, sf::IpAddress address )
+	{
+		fstream file;
+		file.open( "baza.txt" );
+
+		string str;
+		socketTcp.connect( address, CLIENT_PORT_TCP );
+		bool isGoodLogin = false;
+		senderPacket.clear();
+
+		while( file.is_open() && !file.eof() )
+		{
+			file >> str;
+			if( str == login )
+			{
+				file >> str;
+				if( str == password )
+				{
+					isGoodLogin = true; 
+					addClient( s_address( address, login ) );
+					break;
+				}
+			}
+			else file >> str;
+		}
+
+		senderPacket << isGoodLogin;
+		socketTcp.send( senderPacket );
+		socketTcp.disconnect();
 	}
 
 	void serverClass::addClient( s_address address )
