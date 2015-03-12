@@ -25,15 +25,16 @@ int main()
 			if( ( event.type == sf::Event::KeyPressed ) && ( event.key.code == sf::Keyboard::Escape ) )
 				window.close();
 
-			if( connect.bSetText ){
+			/*if( connect.bSetText ){
 				connect.getLoginFromKeyboard( event, window );
 			}
 			else if( !connect.getStatusClient() ){
 				connect.sendDataTcp( "dolacz" );
 				connect.setStatusClient( ClientConnect::CLIENT_LOGGED );
-			}
-			else if( ( event.type == sf::Event::KeyPressed ) && ( event.key.code == sf::Keyboard::F1 ) ){
-				connect.sendDataUdp123();
+			}*/
+
+			if( ( event.type == sf::Event::KeyPressed ) && ( event.key.code == sf::Keyboard::F1 ) ){
+				connect.sendDataTcp123();
 			}
 		}
 
