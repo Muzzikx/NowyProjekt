@@ -1,11 +1,12 @@
 #pragma once
 
-sf::RenderWindow window;				/// podstawowe komponenty okna
+/// ------------------------------------------------- PODSTAWOWE KOMPONENTY
+sf::RenderWindow window;				
 sf::Event event;
 sf::Mouse mouse;
 sf::Clock clocks;
 
-
+/// ------------------------------------------------- STALE UZYWANE W PROGRAMIE
 const std::string DEFAULT_FONT_PATH = "data/font.ttf";
 const std::string ARIAL_FONT_PATH = "data/arial.ttf";
 
@@ -16,11 +17,13 @@ const sf::Color COLOR_BUTTON_OUT = sf::Color(255,120,0,255);
 const sf::Color COLOR_TEXTINPUT_IN = sf::Color(15,15,15,255);
 const sf::Color COLOR_TEXTINPUT_OUT = sf::Color(255,120,0,255);
 
+/// --------------------------------------------------WYLICZENIOWE TYPY UZYWANE W PROGRAMIE
 enum gameState{
 	E_LOGIN_MENU,
 	E_GAME_MENU
 };
 
+/// ---------------------------------------------------STRUKTURY UZYWANE W PROGRAMIE
 struct s_button
 {
 	sf::Text name;

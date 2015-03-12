@@ -6,7 +6,7 @@ int main()
 {
     gameEngine game;
 
-	game.mainLoop();
+	game.mainLoop();		/// glowna petla gry
 
     return 0;
 }

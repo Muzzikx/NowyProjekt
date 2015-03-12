@@ -5,17 +5,15 @@
 class gameEngine
 {
 	gameState currentState;					/// aktualny stan gry 
-
 	loginMenu loginsMenu;					/// klasa odpowiedzialna za menu logowania 
 
 public:
 
-	gameEngine( );
-	void checkEvent();
+	gameEngine( );							/// tworzenie okna 
+	void checkEvent();						/// sprawdzanie klikniec itp 
 	void mainLoop();						/// glowna petla gry 
-	void update();
-	void draw();
-
+	void update();							/// obsluga zdarzen 
+	void draw();							/// rysowanie 
 };
 
 gameEngine::gameEngine( )
@@ -38,7 +36,6 @@ void gameEngine::update()
 {
 	loginsMenu.update( currentState );
 }
-
 
 void gameEngine::mainLoop()
 {

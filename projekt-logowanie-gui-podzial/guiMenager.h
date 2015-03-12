@@ -4,6 +4,7 @@
 
 class guiMenager
 {
+	/// PODSTAWOWE TYPY GUI 
 	std::vector<s_button> buttons;
 	std::vector<s_inputText> inputText;
 	std::vector<s_label> labels;
@@ -11,12 +12,12 @@ class guiMenager
 	sf::Font font;
 	sf::Font arial;
 public:
-	guiMenager();
-	void checkEvent( );
-	void draw();
-	void add( std::string type, sf::Vector2f position , sf::Vector2f size, std::string name );
-	int getClickedButton();
-	std::string getInputText( int id );
+	guiMenager();																				/// zaladowanie czcionek 
+	void checkEvent( );																			/// obsluga zdarzen przyciskow, wpisywania tekstow itp.
+	void draw();																				/// rysowanie gui
+	void add( std::string type, sf::Vector2f position , sf::Vector2f size, std::string name );	/// dodawania typow typy: "button" "inputText" "label"
+	int getClickedButton();																		/// zwraca id wcisnietego buttona
+	std::string getInputText( int id );															/// pobranie tekstu z pola tekstowego o podanym id
 	
 
 };
@@ -27,13 +28,11 @@ guiMenager::guiMenager()
 	arial.loadFromFile( ARIAL_FONT_PATH );
 }
 
-
 std::string guiMenager::getInputText( int id )
 {
 	if( id >= 0 && id <inputText.size() ) return inputText[id].name.getString();
 	else return "";
 }
-
 
 void guiMenager::checkEvent( )
 {

@@ -4,15 +4,14 @@
 class loginMenu
 {
 	sf::Texture textureWallpapper;
-	sf::Sprite spriteWallpapper;
-	guiMenager gui;
+	sf::Sprite spriteWallpapper;					/// sprite odpowiedzialny za tlo w menu
+	guiMenager gui;									/// reprezentant klasy guiMenager zazadza calym gui w programie 
 
 public:
-	loginMenu();
-	void checkEvent( );
-	void update( gameState &currentState  );
-	void draw()  ;
-
+	loginMenu();									/// utworzenie komponentow gui i wczytanie tekstur 
+	void checkEvent( );								/// obsluga eventow 
+	void update( gameState &currentState  );		/// oblsuga dzialan 
+	void draw()  ;									/// wyswietlanie menu
 };
 
 loginMenu::loginMenu()
@@ -34,10 +33,10 @@ void loginMenu::update( gameState &currentState )
 {
 	switch(gui.getClickedButton())
 	{
-	case 0:
+	case 0:		/// przycik login
 		currentState = gameState::E_GAME_MENU;
 		break;
-	case 1:
+	case 1:		/// przycik exit
 		window.close();
 		break;
 	}
