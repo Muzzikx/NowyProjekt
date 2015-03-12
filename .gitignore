@@ -44,3 +44,7 @@ Temporary Items
 *.log
 *.dll
 *.tlog
+*.sdf
+*.suo
+*.pdb
+*.obj
