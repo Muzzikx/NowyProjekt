@@ -103,7 +103,7 @@ bool ClientConnect::sendDataTcp( string szText ){
 		return false;
 
 	pakiet.clear();
-	pakiet << szLogin << szText;
+	pakiet << szText;
 	socketTcp.send( pakiet );
 	socketTcp.disconnect();
 	return true;
