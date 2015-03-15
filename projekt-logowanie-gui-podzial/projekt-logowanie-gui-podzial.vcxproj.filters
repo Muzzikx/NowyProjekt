@@ -35,7 +35,19 @@
     <ClInclude Include="clientConnect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ClientGui.h">
+    <ClInclude Include="AnimationClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="c_gameMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="c_gamePhysics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="c_map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="c_player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -37,11 +37,10 @@ void loginMenu::update( gameState &currentState )
 	switch(gui.getClickedButton())
 	{
 	case 0:		/// przycik login
-		if( connect->sendDataTcp123( gui.getInputText(0), gui.getInputText(1) ) )
+		if( connect->loginOnServer( gui.getInputText(0), gui.getInputText(1) ) )
 			currentState = gameState::E_GAME_MENU;
 		break;
 	case 1:		/// przycik exit
-		connect->logOut();
 		window.close();
 		break;
 	}

@@ -1,86 +1,55 @@
 #pragma once
 #include <SFML/Network.hpp>
-#include "ClientGui.h"
 #include <Windows.h>
 
 using namespace std;
 
-class ClientConnect : public ClientGui
+class ClientConnect 
 {
-	private:
-		sf::TcpListener listenerTcp;
-		sf::TcpSocket socketTcp;
-		sf::UdpSocket socketUdp;
-		sf::IpAddress serverAddress;
-		sf::Socket::Status connectStatusTcp;
-		sf::Packet pakiet;
+	sf::TcpListener listenerTcp;
+	sf::TcpSocket socketTcp;
+	sf::UdpSocket socketUdp;
+	sf::Packet packet;
 
-		bool bConnected;
+public: 
+	ClientConnect();			/// ustawienie danych 
+	~ClientConnect();			/// rozlaczeni z serverem
 
-		const int PORT_SERVER_TCP;
-		const int PORT_SERVER_UDP;
-		const int PORT_CLIENT_UDP;
-
-		const string IP_SERVER;
-
-	public:
-		static enum status{
-			CLIENT_UNLOGGED = 0,
-			CLIENT_LOGGED
-		};
-
-	private: status statusClient;
-
-	public: 
-		ClientConnect();
-		~ClientConnect();
-
-		void logIn();
-		void logOut();
-		void loopConnect();
-
-		bool getStatusClient();
-		bool setStatusClient( status statusClient );
-		string setLoginClient( string szLogin );
-		string getLoginClient();
-		bool getConnectTcp();
-		bool getDataUdp();
-		bool getDataTcp();
-		bool sendDataUdp( string szText );
-		bool sendDataTcp( string szText );
-		bool sendDataUdp123();
-		bool sendDataTcp123( string login, string password );
-		bool getLoginTcp();
+	void loopConnect();										/// wywolywane do pobrania danych z servera jesli wysyla
+	bool getDataUdp();										/// pobiera dane na udp
+	bool sendDataUdp( string szText );						/// wysyla podana wiadomosc do servera za pomocac udp
+	bool sendDataTcp( string szText );						/// wysyla podana wiadomosc do servera za pomocac tcp
+	bool loginOnServer( string login, string password );	/// odpowiada za wyslanie do servera loginu i haslo oraz uruchomienei getLoginTcp aby dostac odpowiedz
+	bool getLoginTcp();										/// zwraca true or false jesli dobrze sie zalogowalismy na server
 };
+
+ClientConnect::ClientConnect(){
+	listenerTcp.setBlocking( false );
+	socketUdp.setBlocking( false );
+	listenerTcp.listen( PORT_CLIENT_TCP );
+	socketUdp.bind( PORT_CLIENT_UDP );
+}
+
+ClientConnect::~ClientConnect(){
+	sendDataTcp( "rozlacz" );
+}
 
 void ClientConnect::loopConnect(){
 	getDataUdp();
-	getDataTcp();
 }
 
-bool ClientConnect::sendDataUdp123(){
-	pakiet.clear();
-	pakiet << "login" << "Muzzik" << "moje_haslo_123";
-	socketUdp.send( pakiet, IP_SERVER, PORT_SERVER_UDP );
-	return true;
-}
-
-bool ClientConnect::sendDataTcp123( string login, string password ){
-	pakiet.clear();	
+bool ClientConnect::loginOnServer( string login, string password ){
+	packet.clear();	
 	socketTcp.disconnect();
-	connectStatusTcp = socketTcp.connect( serverAddress, PORT_SERVER_TCP );
 
-	if( connectStatusTcp == sf::Socket::Done )
-		bConnected = true;
-	else
-		return false;
-
-	pakiet.clear();
-	pakiet << "login" << login << password;
-	cout << "logowanie: " << login << " " << password << endl;
-	socketTcp.send( pakiet );
-
-	return getLoginTcp();
+	if( socketTcp.connect( IP_SERVER, PORT_SERVER_TCP ) == sf::Socket::Done )
+	{
+		packet.clear();
+		packet << "login" << login << password;
+		socketTcp.send( packet );
+		return getLoginTcp();
+	}
+	return false;
 }
 
 bool ClientConnect::getLoginTcp()
@@ -89,9 +58,8 @@ bool ClientConnect::getLoginTcp()
 	listenerTcp.setBlocking( true );
 	
 	if( listenerTcp.accept( socketTcp ) == sf::Socket::Done ){
-		cout << "Odebranie polaczenia tcp od: " << socketTcp.getRemoteAddress().toString() << endl;
-		socketTcp.receive( pakiet );
-		pakiet >> ret; 
+		socketTcp.receive( packet );
+		packet >> ret; 
 	}
 
 	listenerTcp.setBlocking( false );
@@ -99,61 +67,23 @@ bool ClientConnect::getLoginTcp()
 	return ret;
 }
 
-ClientConnect::ClientConnect(): PORT_SERVER_TCP( 12345 ), PORT_SERVER_UDP( 54321 ), PORT_CLIENT_UDP( 11111 ), IP_SERVER( "25.60.93.242" ){
-	bConnected = false;
-	statusClient = CLIENT_UNLOGGED;
-	serverAddress = IP_SERVER;
-	listenerTcp.setBlocking( false );
-	socketUdp.setBlocking( false );
-	listenerTcp.listen( 12121 );
-	socketUdp.bind( PORT_CLIENT_UDP );
-}
-
-ClientConnect::~ClientConnect(){
-	logOut();
-	bConnected = false;
-}
-
 bool ClientConnect::sendDataTcp( string szText ){
-	pakiet.clear();	
+	packet.clear();	
 	socketTcp.disconnect();
-	connectStatusTcp = socketTcp.connect( serverAddress, PORT_SERVER_TCP );
 
-	if( connectStatusTcp == sf::Socket::Done )
-		bConnected = true;
-	else
-		return false;
-
-	socketTcp.setBlocking( true );
-	pakiet << szText;
-	socketTcp.send( pakiet );
-	return true;
-}
-
-bool ClientConnect::getStatusClient(){
-	return statusClient;
-}
-
-bool ClientConnect::setStatusClient( status statusClient ){
-	return this->statusClient = statusClient;
-}
-
-string ClientConnect::getLoginClient(){
-	return szLogin;
-}
-
-string ClientConnect::setLoginClient( string szLogin ){
-	return this->szLogin = szLogin;
-}
-
-bool ClientConnect::getConnectTcp(){
-	return bConnected;
+	if( socketTcp.connect( IP_SERVER, PORT_SERVER_TCP ) == sf::Socket::Done )
+	{
+		packet << szText;
+		socketTcp.send( packet );
+		return true;
+	}
+	return false;
 }
 
 bool ClientConnect::sendDataUdp( string szText ){
-	pakiet.clear();
-	pakiet << szText;
-	socketUdp.send( pakiet, IP_SERVER, PORT_SERVER_UDP );
+	packet.clear();
+	packet << szText;
+	socketUdp.send( packet, IP_SERVER, PORT_SERVER_UDP );
 	return true;
 }
 
@@ -162,23 +92,10 @@ bool ClientConnect::getDataUdp(){
 	unsigned short senderPort;
 	string szText, szText2;
 
-	pakiet.clear();
-	if( !socketUdp.receive( pakiet, senderAddress, senderPort ) ){
-		pakiet >> szText >> szText2;
+	packet.clear();
+	if( !socketUdp.receive( packet, senderAddress, senderPort ) ){
+		packet >> szText >> szText2;
 		cout << "Odebrano od " << szText << ": " << szText2 << endl;
 	}
 	return true;
-}
-
-bool ClientConnect::getDataTcp(){
-	
-	return true;
-}
-
-void ClientConnect::logIn(){
-	sendDataTcp( "dolacz" );
-}
-
-void ClientConnect::logOut(){
-	sendDataTcp( "rozlacz" );
 }
