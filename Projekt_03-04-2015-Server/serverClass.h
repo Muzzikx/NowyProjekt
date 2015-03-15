@@ -45,7 +45,7 @@ public:
 	void checkTcp();															/// odbieranie na tcp
 	void checkAction( sf::Packet packet );										/// obsluga polecenia z tcp
 	void addClient( s_address address );										/// dodanie nowego adresu do listy klientow podlaczonych 
-	void deleteClient( string login );											/// usuniecie adresu z listy klientow podlaczonych 
+	void deleteClient( sf::IpAddress login );											/// usuniecie adresu z listy klientow podlaczonych 
 	void sendDataToAll();														/// wyslanie danego pakietu od nadawcy do reszty podlaczonych klientow 
 	void checkLogin( string login, string password, sf::IpAddress address );	/// sprawdza czy podany login haslo znajduje sie w bazie
 	~serverClass(void);	
@@ -99,8 +99,9 @@ public:
 		string message, login;
 		packet >> message >> login;
 
+		cout << "message: " << message << endl;
 		if( message == "rozlacz" ){
-			deleteClient( login );
+			deleteClient( socketTcp.getRemoteAddress() );
 		}
 		else if( message == "login" )
 		{
@@ -112,11 +113,18 @@ public:
 
 	void serverClass::checkLogin( string login, string password, sf::IpAddress address )
 	{
+		cout << "check login: " << address.toString() << endl;
 		fstream file;
 		file.open( "baza.txt" );
 
+		socketTcp.setBlocking( true );
+	
+		socketTcp.disconnect();
 		string str;
-		socketTcp.connect( address, CLIENT_PORT_TCP );
+
+		if ( socketTcp.connect( address, CLIENT_PORT_TCP, sf::Time( sf::seconds(10) )) == sf::Socket::Done )
+			cout << "polaczony" << endl;
+
 		bool isGoodLogin = false;
 		senderPacket.clear();
 
@@ -138,7 +146,7 @@ public:
 
 		senderPacket << isGoodLogin;
 		socketTcp.send( senderPacket );
-		socketTcp.disconnect();
+		socketTcp.setBlocking( false );
 	}
 
 	void serverClass::addClient( s_address address )
@@ -152,16 +160,16 @@ public:
 		cout << "Dodano: " << activeClient.back().ip.toString() << " login : " << address.login << endl;
 	}
 
-	void serverClass::deleteClient( string login )
+	void serverClass::deleteClient( sf::IpAddress login )
 	{
 
 		cout << "size: " << activeClient.size() << endl;
 		for( int i=0; i<activeClient.size(); i++ )
 		{
 			
-			if( activeClient[i].login == login ){
+			if( activeClient[i].ip == login ){
 				cout << "Usunieto: " << activeClient[i].login << endl;
-				deleteIpClient( activeClient[i].ip.toString(), login );
+				deleteIpClient( activeClient[i].ip.toString(), activeClient[i].login );
 				activeClient.erase( activeClient.begin() + i );	
 				return;
 			}

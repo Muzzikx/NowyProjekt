@@ -35,6 +35,7 @@ struct s_button
 struct s_inputText
 {
 	sf::Text name;
+	std::string text;
 	sf::RectangleShape shape;
 	bool isActived;
 	bool isPass;

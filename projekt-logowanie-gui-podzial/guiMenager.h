@@ -30,7 +30,7 @@ guiMenager::guiMenager()
 
 std::string guiMenager::getInputText( int id )
 {
-	if( id >= 0 && id <inputText.size() ) return inputText[id].name.getString();
+	if( id >= 0 && id <inputText.size() ) return inputText[id].text;
 	else return "";
 }
 
@@ -60,11 +60,19 @@ void guiMenager::checkEvent( )
 					if( inputText[i].name.getString().getSize() > 0){
 						newString.append( inputText[i].name.getString(), 0, inputText[i].name.getString().getSize()-1 );
 						inputText[i].name.setString( newString );
+
+						newString.clear();
+						newString.append( inputText[i].text, 0, inputText[i].text.size()-1 );
+
+						inputText[i].text = newString;
 					}
 					break;
 				default:
 					if( inputText[i].name.getLocalBounds().width < (inputText[i].shape.getLocalBounds().left + inputText[i].shape.getLocalBounds().width - 30) )
+					{
 						inputText[i].name.setString( inputText[i].name.getString() + (inputText[i].isPass ? '*' : static_cast<char>(event.text.unicode) ) );
+						inputText[i].text = inputText[i].text + static_cast<char>(event.text.unicode);
+					}
 					break;
 				}
 			}

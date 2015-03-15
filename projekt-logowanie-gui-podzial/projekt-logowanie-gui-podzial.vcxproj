@@ -84,6 +84,8 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="clientConnect.h" />
+    <ClInclude Include="ClientGui.h" />
     <ClInclude Include="definitions.h" />
     <ClInclude Include="gameEngine.h" />
     <ClInclude Include="guiMenager.h" />

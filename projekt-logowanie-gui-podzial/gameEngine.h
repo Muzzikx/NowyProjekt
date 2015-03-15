@@ -1,11 +1,13 @@
 #pragma once
 #include "definitions.h"
 #include "loginMenu.h"
+#include "ClientConnect.h"
 
 class gameEngine
 {
 	gameState currentState;					/// aktualny stan gry 
-	loginMenu loginsMenu;					/// klasa odpowiedzialna za menu logowania 
+	loginMenu *loginsMenu;					/// klasa odpowiedzialna za menu logowania 
+	ClientConnect connect;					/// klient sieciowy
 
 public:
 
@@ -18,6 +20,7 @@ public:
 
 gameEngine::gameEngine( )
 {
+	loginsMenu = new loginMenu( connect );
 	window.create( sf::VideoMode(1024, 768), "Game", sf::Style::Titlebar );
 	window.setFramerateLimit( 60 );
 	currentState = gameState::E_LOGIN_MENU;
@@ -28,13 +31,14 @@ void gameEngine::checkEvent()
 	while (window.pollEvent(event)){
 		if ( event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape ) window.close();
 
-		if( currentState == gameState::E_LOGIN_MENU ) loginsMenu.checkEvent( );
+		if( currentState == gameState::E_LOGIN_MENU ) loginsMenu->checkEvent( );
     }
 }
 
 void gameEngine::update()
 {
-	loginsMenu.update( currentState );
+	loginsMenu->update( currentState );
+	connect.loopConnect();
 }
 
 void gameEngine::mainLoop()
@@ -49,6 +53,6 @@ void gameEngine::mainLoop()
 void gameEngine::draw()
 {
 	window.clear();
-	if( currentState == gameState::E_LOGIN_MENU ) loginsMenu.draw();
+	if( currentState == gameState::E_LOGIN_MENU ) loginsMenu->draw();
 	window.display();
 }

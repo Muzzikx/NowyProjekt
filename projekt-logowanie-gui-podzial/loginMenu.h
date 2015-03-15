@@ -1,21 +1,24 @@
 #pragma once
 #include "guiMenager.h"
+#include "ClientConnect.h"
 
 class loginMenu
 {
 	sf::Texture textureWallpapper;
 	sf::Sprite spriteWallpapper;					/// sprite odpowiedzialny za tlo w menu
 	guiMenager gui;									/// reprezentant klasy guiMenager zazadza calym gui w programie 
+	ClientConnect *connect;
 
 public:
-	loginMenu();									/// utworzenie komponentow gui i wczytanie tekstur 
+	loginMenu( ClientConnect &connect );									/// utworzenie komponentow gui i wczytanie tekstur 
 	void checkEvent( );								/// obsluga eventow 
 	void update( gameState &currentState  );		/// oblsuga dzialan 
 	void draw()  ;									/// wyswietlanie menu
 };
 
-loginMenu::loginMenu()
+loginMenu::loginMenu( ClientConnect &connect )
 {
+	this->connect = &connect;
 	textureWallpapper.loadFromFile("data/loginMenu/wallpapper.jpg");
 	spriteWallpapper.setTexture( textureWallpapper );
 
@@ -34,9 +37,11 @@ void loginMenu::update( gameState &currentState )
 	switch(gui.getClickedButton())
 	{
 	case 0:		/// przycik login
-		currentState = gameState::E_GAME_MENU;
+		if( connect->sendDataTcp123( gui.getInputText(0), gui.getInputText(1) ) )
+			currentState = gameState::E_GAME_MENU;
 		break;
 	case 1:		/// przycik exit
+		connect->logOut();
 		window.close();
 		break;
 	}

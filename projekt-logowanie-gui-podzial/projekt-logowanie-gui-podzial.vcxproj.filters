@@ -32,5 +32,11 @@
     <ClInclude Include="guiMenager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="clientConnect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientGui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
